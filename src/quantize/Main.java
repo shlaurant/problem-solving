@@ -17,9 +17,13 @@ public final class Main {
     private static void solveProblem(Scanner scanner) {
         int numOfInts = scanner.nextInt();
         int numOfSplits = scanner.nextInt();
-        Divider divider = new Divider(numOfInts, numOfSplits);
-        List<Integer> inputList = sortedInputList(scanner, numOfInts);
-        System.out.println(minSum(divider, inputList));
+        if (numOfInts <= numOfSplits) {
+            System.out.println(0);
+        } else {
+            Divider divider = new Divider(numOfInts, numOfSplits);
+            List<Integer> inputList = sortedInputList(scanner, numOfInts);
+            System.out.println(minSum(divider, inputList));
+        }
     }
 
     private static int minSum(Divider divider, List<Integer> integerList) {
@@ -160,13 +164,13 @@ public final class Main {
         }
 
         private int combination(int n, int k) {
-            return factorialOf(n)/factorialOf(k)/factorialOf(n-k);
+            return factorialOf(n) / factorialOf(k) / factorialOf(n - k);
         }
 
         private int factorialOf(int n) {
             int result = 1;
             for (int i = 1; i <= n; i++) {
-                result = result*i;
+                result = result * i;
             }
             return result;
         }
