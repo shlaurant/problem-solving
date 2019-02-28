@@ -158,5 +158,17 @@ public final class Main {
             Collections.sort(possibility);
             return possibility;
         }
+
+        private int combination(int n, int k) {
+            return factorialOf(n)/factorialOf(k)/factorialOf(n-k);
+        }
+
+        private int factorialOf(int n) {
+            int result = 1;
+            for (int i = 1; i <= n; i++) {
+                result = result*i;
+            }
+            return result;
+        }
     }
 }
