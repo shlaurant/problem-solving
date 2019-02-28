@@ -9,7 +9,7 @@ public final class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int numOfTests = scanner.nextInt();
-        for(int i = 0; i < numOfTests; i++) {
+        for (int i = 0; i < numOfTests; i++) {
             solveProblem(scanner);
         }
     }
@@ -18,27 +18,36 @@ public final class Main {
         int numOfInts = scanner.nextInt();
         int numOfSplits = scanner.nextInt();
         Divider divider = new Divider(numOfInts, numOfSplits);
-        IntegerList integerList = new IntegerList(sortedInputList(scanner, numOfInts));
+        IntegerList integerList = new IntegerList(sortedInputList(scanner,
+                numOfInts));
         System.out.println(minSum(divider, integerList));
     }
 
     private static int minSum(Divider divider, IntegerList integerList) {
         int minSum = Integer.MAX_VALUE;
-        for(List<Integer> possibility : divider.possibleDividings()) {
-            int squareSumOfPossibility = 0;
-            for(IntegerList subLists: integerList.divideTo(possibility)) {
-                squareSumOfPossibility += subLists.sumOfSquares();
-            }
-            if(squareSumOfPossibility < minSum) {
+        for (List<Integer> possibility : divider.possibleDividings()) {
+            int squareSumOfPossibility = sumforPossibility(integerList,
+                    possibility);
+            if (squareSumOfPossibility < minSum) {
                 minSum = squareSumOfPossibility;
             }
         }
         return minSum;
     }
 
-    private static List<Integer> sortedInputList(Scanner scanner, int numOfInts) {
+    private static int sumforPossibility(IntegerList integerList,
+                                         List<Integer> possibility) {
+        int squareSumOfPossibility = 0;
+        for (IntegerList subLists : integerList.divideTo(possibility)) {
+            squareSumOfPossibility += subLists.sumOfSquares();
+        }
+        return squareSumOfPossibility;
+    }
+
+    private static List<Integer> sortedInputList(Scanner scanner,
+                                                 int numOfInts) {
         List<Integer> originalList = new ArrayList<>(numOfInts);
-        for(int i = 0; i < numOfInts; i++) {
+        for (int i = 0; i < numOfInts; i++) {
             originalList.add(scanner.nextInt());
         }
         Collections.sort(originalList);
