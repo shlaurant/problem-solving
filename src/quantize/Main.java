@@ -18,13 +18,11 @@ public final class Main {
         int numOfInts = scanner.nextInt();
         int numOfSplits = scanner.nextInt();
         Divider divider = new Divider(numOfInts, numOfSplits);
-        List<Integer> originalList = new ArrayList<>(numOfInts);
-        for(int i = 0; i < numOfInts; i++) {
-            originalList.add(scanner.nextInt());
-        }
-        Collections.sort(originalList);
-        IntegerList integerList = new IntegerList(originalList);
+        IntegerList integerList = new IntegerList(sortedInputList(scanner, numOfInts));
+        System.out.println(minSum(divider, integerList));
+    }
 
+    private static int minSum(Divider divider, IntegerList integerList) {
         int minSum = Integer.MAX_VALUE;
         for(List<Integer> possibility : divider.possibleDividings()) {
             int squareSumOfPossibility = 0;
@@ -35,7 +33,16 @@ public final class Main {
                 minSum = squareSumOfPossibility;
             }
         }
-        System.out.println(minSum);
+        return minSum;
+    }
+
+    private static List<Integer> sortedInputList(Scanner scanner, int numOfInts) {
+        List<Integer> originalList = new ArrayList<>(numOfInts);
+        for(int i = 0; i < numOfInts; i++) {
+            originalList.add(scanner.nextInt());
+        }
+        Collections.sort(originalList);
+        return originalList;
     }
 
     public static final class IntegerList {
