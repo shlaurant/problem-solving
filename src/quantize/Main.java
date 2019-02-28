@@ -90,10 +90,6 @@ public final class Main {
             return integerLists;
         }
 
-        public int size() {
-            return integerList.size();
-        }
-
         private int optimizedQuantizer() {
             int sum = 0;
             for (int number : integerList) {
