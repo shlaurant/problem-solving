@@ -18,15 +18,14 @@ public final class Main {
         int numOfInts = scanner.nextInt();
         int numOfSplits = scanner.nextInt();
         Divider divider = new Divider(numOfInts, numOfSplits);
-        IntegerList integerList = new IntegerList(sortedInputList(scanner,
-                numOfInts));
-        System.out.println(minSum(divider, integerList));
+        List<Integer> inputList = sortedInputList(scanner, numOfInts);
+        System.out.println(minSum(divider, inputList));
     }
 
-    private static int minSum(Divider divider, IntegerList integerList) {
+    private static int minSum(Divider divider, List<Integer> integerList) {
         int minSum = Integer.MAX_VALUE;
         for (List<Integer> possibility : divider.possibleDividings()) {
-            int squareSumOfPossibility = sumforPossibility(integerList,
+            int squareSumOfPossibility = sumForPossibility(integerList,
                     possibility);
             if (squareSumOfPossibility < minSum) {
                 minSum = squareSumOfPossibility;
@@ -35,11 +34,12 @@ public final class Main {
         return minSum;
     }
 
-    private static int sumforPossibility(IntegerList integerList,
+    private static int sumForPossibility(List<Integer> integerList,
                                          List<Integer> possibility) {
         int squareSumOfPossibility = 0;
-        for (IntegerList subLists : integerList.divideTo(possibility)) {
-            squareSumOfPossibility += subLists.sumOfSquares();
+        for (List<Integer> subLists : divideListWith(integerList,
+                possibility)) {
+            squareSumOfPossibility += sumOfSquaresOf(subLists);
         }
         return squareSumOfPossibility;
     }
@@ -54,53 +54,41 @@ public final class Main {
         return originalList;
     }
 
-    public static final class IntegerList {
-        private final List<Integer> integerList;
-
-        public IntegerList(List<Integer> integerList) {
-            this.integerList = integerList;
-        }
-
-        public int sumOfSquares() {
-            int sum = 0;
-            for (int number : integerList) {
-                sum += (number - optimizedQuantizer()) * (number - optimizedQuantizer());
+    private static List<List<Integer>> divideListWith(List<Integer> divided,
+                                                      List<Integer> divider) {
+        List<List<Integer>> integerLists = new ArrayList<>(divider.size());
+        for (int index = 0; index < divider.size(); index++) {
+            int inclusive;
+            if (index == 0) {
+                inclusive = 0;
+            } else {
+                inclusive = divider.get(index - 1);
             }
-            return sum;
+            int exclusive = divider.get(index);
+            integerLists.add(subList(divided, inclusive, exclusive));
         }
+        return integerLists;
+    }
 
-        /**
-         * integers should be sorted and contain size of IntegerList;
-         *
-         * @param integers
-         * @return
-         */
-        public List<IntegerList> divideTo(List<Integer> integers) {
-            List<IntegerList> integerLists = new ArrayList<>(integers.size());
-            for (int index = 0; index < integers.size(); index++) {
-                int inclusive;
-                if (index == 0) {
-                    inclusive = 0;
-                } else {
-                    inclusive = integers.get(index - 1);
-                }
-                int exclusive = integers.get(index);
-                integerLists.add(subList(inclusive, exclusive));
-            }
-            return integerLists;
+    private static int sumOfSquaresOf(List<Integer> integers) {
+        int sum = 0;
+        for (int number : integers) {
+            sum += (number - optimizedQuantizerOf(integers)) * (number - optimizedQuantizerOf(integers));
         }
+        return sum;
+    }
 
-        private int optimizedQuantizer() {
-            int sum = 0;
-            for (int number : integerList) {
-                sum += number;
-            }
-            return Math.round((float) sum / integerList.size());
-        }
+    private static List<Integer> subList(List<Integer> integers, int inclusive,
+                                         int exclusive) {
+        return integers.subList(inclusive, exclusive);
+    }
 
-        private IntegerList subList(int inclusive, int exclusive) {
-            return new IntegerList(integerList.subList(inclusive, exclusive));
+    private static int optimizedQuantizerOf(List<Integer> integers) {
+        int sum = 0;
+        for (int number : integers) {
+            sum += number;
         }
+        return Math.round((float) sum / integers.size());
     }
 
     public static final class Divider {
