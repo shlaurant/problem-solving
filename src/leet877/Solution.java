@@ -1,132 +1,66 @@
 package leet877;
 
+import java.util.Arrays;
+
 class Solution {
     private int[] piles;
-    private Answer[][] arrayStore;
+    private int[][] store;
 
     public boolean stoneGame(int[] piles) {
         this.piles = piles;
-        arrayStore = new Answer[piles.length + 1][piles.length + 1];
-
-        return answerFor(new State(0, piles.length)).isAlexWon();
+        if (store == null) {
+            store = new int[piles.length + 1][piles.length + 1];
+        }
+        for (int[] ints : store) {
+            Arrays.fill(ints, Integer.MAX_VALUE);
+        }
+        return answerOf(0, piles.length) < 0;
     }
 
-    private Answer answerFor(State state) {
-        Answer answer;
-        if (hasAnswer(state)) {
-            answer = lookup(state);
+    private int answerOf(int inc, int exc) {
+        int answer;
+        if (hasAnswer(inc, exc)) {
+            answer = lookup(inc, exc);
         } else {
-            if (isBaseCase(state)) {
-                answer = basicAnswer(state);
-            } else {
-                answer = answerSolving(state);
-            }
-            save(state, answer);
+            answer = calcedAnswerOf(inc, exc);
+            save(inc, exc, answer);
         }
         return answer;
     }
 
-    private boolean hasAnswer(State state) {
-        return arrayStore[state.inc][state.exc] != null;
+    private boolean hasAnswer(int inc, int exc) {
+        return lookup(inc, exc) != Integer.MAX_VALUE;
     }
 
-    private Answer lookup(State state) {
-        return arrayStore[state.inc][state.exc];
+    private int lookup(int inc, int exc) {
+        return store[inc][exc];
     }
 
-    private void save(State state, Answer answer) {
-        arrayStore[state.inc][state.exc] = answer;
-    }
-
-    private boolean isBaseCase(State state) {
-        return state.exc - state.inc == 2;
-    }
-
-    private Answer basicAnswer(State state) {
-        return new Answer(Math.max(piles[state.inc],
-                piles[state.exc - 1]), Math.min(piles[state.inc],
-                piles[state.exc - 1]));
-    }
-
-    private Answer answerSolving(State state) {
-        Answer answer;
-        Answer answer1 = answerFor(state.stateWithoutRight());
-        Answer answer2 = answerFor(state.stateWithoutLeft());
-        int difRight = answer1.difference();
-        int difLeft = answer2.difference();
-        if (state.isAlexFirst()) {
-            int right = difRight + piles[state.exc - 1];
-            int left = difLeft + piles[state.inc];
-            if (right > left) {
-                answer =
-                        new Answer(answer1.alex + piles[state.exc - 1],
-                                answer1.lee);
-            } else {
-                answer =
-                        new Answer(answer2.alex + piles[state.inc],
-                                answer2.lee);
-            }
+    private int calcedAnswerOf(int inc, int exc) {
+        int answer;
+        if (isBasic(inc, exc)) {
+            answer = Math.abs(piles[inc] - piles[exc - 1]);
         } else {
-            int right = difRight - piles[state.exc - 1];
-            int left = difLeft - piles[state.inc];
-            if (right < left) {
-                answer =
-                        new Answer(answer1.alex,
-                                answer1.lee + piles[state.exc - 1]);
+            if (isAlex(inc, exc)) {
+                answer = Math.max(answerOf(inc, exc - 1) + piles[exc - 1],
+                        answerOf(inc + 1, exc) + piles[inc]);
             } else {
-                answer =
-                        new Answer(answer2.alex,
-                                answer2.lee + piles[state.inc]);
+                answer = Math.min(answerOf(inc, exc - 1) - piles[exc - 1],
+                        answerOf(inc + 1, exc) - piles[inc]);
             }
         }
         return answer;
     }
 
-    private int difLeft(State state) {
-        return answerFor(state.stateWithoutLeft()).difference();
+    private void save(int inc, int exc, int answer) {
+        store[inc][exc] = answer;
     }
 
-    private int difRight(State state) {
-        return answerFor(state.stateWithoutRight()).difference();
+    private boolean isBasic(int inc, int exc) {
+        return exc - inc == 2;
     }
 
-    private final class State {
-        private final int inc;
-        private final int exc;
-
-        private State(int inc, int exc) {
-            this.inc = inc;
-            this.exc = exc;
-        }
-
-        private boolean isAlexFirst() {
-            return (exc - inc) % 2 == 0;
-        }
-
-        private State stateWithoutRight() {
-            return new State(inc, exc - 1);
-        }
-
-        private State stateWithoutLeft() {
-            return new State(inc + 1, exc);
-        }
-    }
-
-    private class Answer {
-        private final int alex;
-        private final int lee;
-
-        private Answer(int alex, int lee) {
-            this.alex = alex;
-            this.lee = lee;
-        }
-
-        private boolean isAlexWon() {
-            return alex > lee;
-        }
-
-        private int difference() {
-            return alex - lee;
-        }
+    private boolean isAlex(int inc, int exc) {
+        return exc - inc % 2 == 0;
     }
 }
