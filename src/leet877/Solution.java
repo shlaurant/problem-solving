@@ -20,7 +20,11 @@ class Solution {
         if (store.containsKey(state)) {
             answer = store.get(state);
         } else {
-            if (state.exc - state.inc != 2) {
+            if (state.exc - state.inc == 2) {
+                answer = new Answer(Math.max(piles[state.inc],
+                        piles[state.exc - 1]), Math.min(piles[state.inc],
+                        piles[state.exc - 1]));
+            } else {
                 Answer answer1 = answerFor(state.stateWithoutRight());
                 Answer answer2 = answerFor(state.stateWithoutLeft());
                 int difRight = answer1.difference();
@@ -50,10 +54,6 @@ class Solution {
                                         answer2.lee + piles[state.inc]);
                     }
                 }
-            } else {
-                answer = new Answer(Math.max(piles[state.inc],
-                        piles[state.exc - 1]), Math.min(piles[state.inc],
-                        piles[state.exc - 1]));
             }
             store.put(state, answer);
         }
