@@ -9,11 +9,8 @@ class Solution {
 
     public boolean stoneGame(int[] piles) {
         this.piles = piles;
-        if(store == null) {
-            store = new HashMap<>();
-        } else {
-            store.clear();
-        }
+        store = new HashMap<>();
+
 
         return answerFor(new State(0, piles.length)).isAlexWon();
     }
@@ -22,9 +19,10 @@ class Solution {
         Answer answer;
         if (store.containsKey(state)) {
             answer = store.get(state);
-        } else if(state.exc - state.inc == 2) {
+        } else if (state.exc - state.inc == 2) {
             answer = new Answer(Math.max(piles[state.inc],
-                    piles[state.exc-1]), Math.min(piles[state.inc], piles[state.exc-1]));
+                    piles[state.exc - 1]), Math.min(piles[state.inc],
+                    piles[state.exc - 1]));
             store.put(state, answer);
         } else {
             Answer answer1 = answerFor(state.stateWithoutRight());
@@ -36,20 +34,24 @@ class Solution {
                 int left = difLeft + piles[state.inc];
                 if (right > left) {
                     answer =
-                            new Answer(answer1.alex + piles[state.exc - 1], answer1.lee);
+                            new Answer(answer1.alex + piles[state.exc - 1],
+                                    answer1.lee);
                 } else {
                     answer =
-                            new Answer(answer2.alex + piles[state.inc], answer2.lee);
+                            new Answer(answer2.alex + piles[state.inc],
+                                    answer2.lee);
                 }
             } else {
                 int right = difRight - piles[state.exc - 1];
                 int left = difLeft - piles[state.inc];
                 if (right < left) {
                     answer =
-                            new Answer(answer1.alex, answer1.lee + piles[state.exc - 1]);
+                            new Answer(answer1.alex,
+                                    answer1.lee + piles[state.exc - 1]);
                 } else {
                     answer =
-                            new Answer(answer2.alex, answer2.lee + piles[state.inc]);
+                            new Answer(answer2.alex,
+                                    answer2.lee + piles[state.inc]);
                 }
             }
             store.put(state, answer);
