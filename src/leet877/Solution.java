@@ -1,33 +1,41 @@
 package leet877;
 
-import java.util.HashMap;
-import java.util.Map;
-
 class Solution {
     private int[] piles;
-    private Map<State, Answer> store;
+    private Answer[][] arrayStore;
 
     public boolean stoneGame(int[] piles) {
         this.piles = piles;
-        store = new HashMap<>();
-
+        arrayStore = new Answer[piles.length + 1][piles.length + 1];
 
         return answerFor(new State(0, piles.length)).isAlexWon();
     }
 
     private Answer answerFor(State state) {
         Answer answer;
-        if (store.containsKey(state)) {
-            answer = store.get(state);
+        if (hasAnswer(state)) {
+            answer = lookup(state);
         } else {
             if (isBaseCase(state)) {
                 answer = basicAnswer(state);
             } else {
                 answer = answerSolving(state);
             }
-            store.put(state, answer);
+            save(state, answer);
         }
         return answer;
+    }
+
+    private boolean hasAnswer(State state) {
+        return arrayStore[state.inc][state.exc] != null;
+    }
+
+    private Answer lookup(State state) {
+        return arrayStore[state.inc][state.exc];
+    }
+
+    private void save(State state, Answer answer) {
+        arrayStore[state.inc][state.exc] = answer;
     }
 
     private boolean isBaseCase(State state) {
