@@ -25,13 +25,21 @@ class Solution {
             return 0;
         }
         int answer;
-        if (dp[day-1] != -1) {
-            answer = dp[day-1];
+        if (hasAnswerFor(day)) {
+            answer = lookupFor(day);
         } else {
             answer = solveState(day);
-            dp[day-1] = answer;
+            saveAnswer(day, answer);
         }
         return answer;
+    }
+
+    private boolean hasAnswerFor(int day) {
+        return dp[day-1] != -1;
+    }
+
+    private int lookupFor(int day) {
+        return dp[day-1];
     }
 
     private int solveState(int day) {
@@ -44,5 +52,9 @@ class Solution {
             answer = solutionFor(day-1);
         }
         return answer;
+    }
+
+    private void saveAnswer(int day, int answer) {
+        dp[day-1] = answer;
     }
 }
