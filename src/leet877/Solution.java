@@ -61,9 +61,9 @@ class Solution {
         return answerFor(state.stateWithoutRight()).difference();
     }
 
-    private class State {
-        private int inc;
-        private int exc;
+    private final class State {
+        private final int inc;
+        private final int exc;
 
         private State(int inc, int exc) {
             this.inc = inc;
@@ -81,11 +81,29 @@ class Solution {
         private State stateWithoutLeft() {
             return new State(inc + 1, exc);
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            State state = (State) o;
+
+            if (inc != state.inc) return false;
+            return exc == state.exc;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = inc;
+            result = 31 * result + exc;
+            return result;
+        }
     }
 
     private class Answer {
-        private int alex;
-        private int lee;
+        private final int alex;
+        private final int lee;
 
         private Answer(int alex, int lee) {
             this.alex = alex;
