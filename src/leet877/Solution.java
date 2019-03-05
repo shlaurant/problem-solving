@@ -19,40 +19,41 @@ class Solution {
         Answer answer;
         if (store.containsKey(state)) {
             answer = store.get(state);
-        } else if (state.exc - state.inc == 2) {
-            answer = new Answer(Math.max(piles[state.inc],
-                    piles[state.exc - 1]), Math.min(piles[state.inc],
-                    piles[state.exc - 1]));
-            store.put(state, answer);
         } else {
-            Answer answer1 = answerFor(state.stateWithoutRight());
-            Answer answer2 = answerFor(state.stateWithoutLeft());
-            int difRight = answer1.difference();
-            int difLeft = answer2.difference();
-            if (state.isAlexFirst()) {
-                int right = difRight + piles[state.exc - 1];
-                int left = difLeft + piles[state.inc];
-                if (right > left) {
-                    answer =
-                            new Answer(answer1.alex + piles[state.exc - 1],
-                                    answer1.lee);
+            if (state.exc - state.inc != 2) {
+                Answer answer1 = answerFor(state.stateWithoutRight());
+                Answer answer2 = answerFor(state.stateWithoutLeft());
+                int difRight = answer1.difference();
+                int difLeft = answer2.difference();
+                if (state.isAlexFirst()) {
+                    int right = difRight + piles[state.exc - 1];
+                    int left = difLeft + piles[state.inc];
+                    if (right > left) {
+                        answer =
+                                new Answer(answer1.alex + piles[state.exc - 1],
+                                        answer1.lee);
+                    } else {
+                        answer =
+                                new Answer(answer2.alex + piles[state.inc],
+                                        answer2.lee);
+                    }
                 } else {
-                    answer =
-                            new Answer(answer2.alex + piles[state.inc],
-                                    answer2.lee);
+                    int right = difRight - piles[state.exc - 1];
+                    int left = difLeft - piles[state.inc];
+                    if (right < left) {
+                        answer =
+                                new Answer(answer1.alex,
+                                        answer1.lee + piles[state.exc - 1]);
+                    } else {
+                        answer =
+                                new Answer(answer2.alex,
+                                        answer2.lee + piles[state.inc]);
+                    }
                 }
             } else {
-                int right = difRight - piles[state.exc - 1];
-                int left = difLeft - piles[state.inc];
-                if (right < left) {
-                    answer =
-                            new Answer(answer1.alex,
-                                    answer1.lee + piles[state.exc - 1]);
-                } else {
-                    answer =
-                            new Answer(answer2.alex,
-                                    answer2.lee + piles[state.inc]);
-                }
+                answer = new Answer(Math.max(piles[state.inc],
+                        piles[state.exc - 1]), Math.min(piles[state.inc],
+                        piles[state.exc - 1]));
             }
             store.put(state, answer);
         }
