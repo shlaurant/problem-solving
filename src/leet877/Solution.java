@@ -27,25 +27,29 @@ class Solution {
                     piles[state.exc-1]), Math.min(piles[state.inc], piles[state.exc-1]));
             store.put(state, answer);
         } else {
+            Answer answer1 = answerFor(state.stateWithoutRight());
+            Answer answer2 = answerFor(state.stateWithoutLeft());
+            int difRight = answer1.difference();
+            int difLeft = answer2.difference();
             if (state.isAlexFirst()) {
-                int right = difRight(state) + piles[state.exc - 1];
-                int left = difLeft(state) + piles[state.inc];
+                int right = difRight + piles[state.exc - 1];
+                int left = difLeft + piles[state.inc];
                 if (right > left) {
                     answer =
-                            new Answer(answerFor(state.stateWithoutRight()).alex + piles[state.exc - 1], answerFor(state.stateWithoutRight()).lee);
+                            new Answer(answer1.alex + piles[state.exc - 1], answer1.lee);
                 } else {
                     answer =
-                            new Answer(answerFor(state.stateWithoutLeft()).alex + piles[state.inc], answerFor(state.stateWithoutLeft()).lee);
+                            new Answer(answer2.alex + piles[state.inc], answer2.lee);
                 }
             } else {
-                int right = difRight(state) - piles[state.exc - 1];
-                int left = difLeft(state) - piles[state.inc];
+                int right = difRight - piles[state.exc - 1];
+                int left = difLeft - piles[state.inc];
                 if (right < left) {
                     answer =
-                            new Answer(answerFor(state.stateWithoutRight()).alex, answerFor(state.stateWithoutRight()).lee + piles[state.exc - 1]);
+                            new Answer(answer1.alex, answer1.lee + piles[state.exc - 1]);
                 } else {
                     answer =
-                            new Answer(answerFor(state.stateWithoutLeft()).alex, answerFor(state.stateWithoutLeft()).lee + piles[state.inc]);
+                            new Answer(answer2.alex, answer2.lee + piles[state.inc]);
                 }
             }
             store.put(state, answer);
